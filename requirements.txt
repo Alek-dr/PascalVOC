@@ -1,2 +1,2 @@
-lxml==4.6.2
-Pillow==8.1.0
+lxml>=4.6.2
+Pillow>=8.1.0

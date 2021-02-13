@@ -63,3 +63,8 @@ if __name__ == '__main__':
             json.dump(lbl_me, f)
 ```
 ![Labelme](labelme.png "Labelme")
+
+#### Installation
+```
+python setup.py install
+```

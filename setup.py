@@ -1,5 +1,8 @@
 import setuptools
 
+with open('requirements.txt') as f:
+    install_requires = f.read()
+
 setuptools.setup(
     name="pascal_voc",
     version="0.0.1",
@@ -8,6 +11,7 @@ setuptools.setup(
     description="Working with PascalVOC annotations",
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
+    install_requires=install_requires,
     license="MIT",
     classifiers=[
         "Programming Language :: Python :: 3",
