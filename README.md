@@ -4,7 +4,7 @@ Python utility to work with PascalVoc annotation format
 
 #### Code Examples
 
-Examples from [PascalVoc2007](hhttp://host.robots.ox.ac.uk/pascal/VOC/voc2007/) dataset
+Image examples from [PascalVoc2007](hhttp://host.robots.ox.ac.uk/pascal/VOC/voc2007/) dataset
 
 ##### Read annotation from xml file
 ```
