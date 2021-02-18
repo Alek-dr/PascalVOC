@@ -368,6 +368,22 @@ class PascalVOC:
         )
         return res
 
+    def to_yolo(self, labels_map: dict) -> str:
+        objects = []
+        for obj in self.objects:
+            label = labels_map[obj.name]
+            dx = float(obj.bndbox.xmax - obj.bndbox.xmin)
+            dy = float(obj.bndbox.ymax - obj.bndbox.ymin)
+            x = dx * 0.5
+            y = dy * 0.5
+            dx /= self.size.width
+            dy /= self.size.height
+            x /= self.size.width
+            y /= self.size.height
+            s = f"{label} {x:.3f} {y:.3f} {dx:.3f} {dy:.3f}"
+            objects.append(s)
+        return "\n".join(objects)
+
     def save(self, output: Union[Path, str],
              drop_all=False,
              drop_path: bool = False,
