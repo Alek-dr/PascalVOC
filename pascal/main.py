@@ -218,6 +218,8 @@ class PascalVOC:
                     if field.tag != 'bndbox':
                         if hasattr(obj_, field.tag):
                             setattr(obj_, field.tag, field.text)
+                        else:
+                            obj_.add_feature(field.tag, field.text)
                 box_tag = obj.find("bndbox")
                 xmin = int(box_tag.find("xmin").text)
                 ymin = int(box_tag.find("ymin").text)
