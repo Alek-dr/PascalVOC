@@ -201,9 +201,9 @@ class PascalVOC:
             else:
                 database = str()
             size_tag = doc.find("size")
-            width = size_tag.find("width").text
-            height = size_tag.find("height").text
-            depth = size_tag.find("depth").text
+            width = int(size_tag.find("width").text)
+            height = int(size_tag.find("height").text)
+            depth = int(size_tag.find("depth").text)
             size = size_block(width, height, depth)
             segmented_ = doc.find("segmented")
             if segmented_:
