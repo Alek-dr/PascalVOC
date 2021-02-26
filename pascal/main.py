@@ -59,7 +59,7 @@ class PascalObject:
         self._truncated = truncated
         self._difficult = difficult
         self._bndbox = bndbox
-        self._other_fields = kwargs
+        self.other_fields = kwargs
 
     @property
     def name(self):
@@ -125,7 +125,7 @@ class PascalObject:
         difficult_value = "1" if self._difficult else "0"
         difficult = f"<difficult>{difficult_value}</difficult>"
         other_attributes = []
-        for k, v in self._other_fields.items():
+        for k, v in self.other_fields.items():
             line = f"<{k}>{v}</{k}>"
             other_attributes.append(line)
         attributes = [name, pose, truncated, difficult, *other_attributes, str(self.bndbox)]
@@ -146,7 +146,7 @@ class PascalObject:
         difficult.text = "1" if self.truncated else "0"
         bnd_box = self.bndbox.to_xml()
         add_features = []
-        for k, v in self._other_fields.items():
+        for k, v in self.other_fields.items():
             f = xml.Element(str(k))
             f.text = str(v)
             add_features.append(f)
@@ -160,11 +160,11 @@ class PascalObject:
         return obj
 
     def add_feature(self, fname: str, fvalue):
-        self._other_fields[fname] = fvalue
+        self.other_fields[fname] = fvalue
 
     def remove_feature(self, fname: str):
-        if self._other_fields.get(fname):
-            del self._other_fields[fname]
+        if self.other_fields.get(fname):
+            del self.other_fields[fname]
 
 
 class PascalVOC:
