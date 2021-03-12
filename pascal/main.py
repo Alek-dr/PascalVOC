@@ -376,8 +376,8 @@ class PascalVOC:
             label = labels_map[obj.name]
             dx = float(obj.bndbox.xmax - obj.bndbox.xmin)
             dy = float(obj.bndbox.ymax - obj.bndbox.ymin)
-            x = dx * 0.5
-            y = dy * 0.5
+            x = obj.bndbox.xmin + dx * 0.5
+            y = obj.bndbox.ymin + dy * 0.5
             dx /= self.size.width
             dy /= self.size.height
             x /= self.size.width
