@@ -7,6 +7,7 @@ Image examples from [PascalVoc2007](hhttp://host.robots.ox.ac.uk/pascal/VOC/voc2
 #### Code Examples
 
 ##### Read annotation from xml file
+
 ```
 from pathlib import Path
 
@@ -33,7 +34,9 @@ if __name__ == '__main__':
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 ```
+
 ##### Make annotation
+
 ```
 from pascal import PascalVOC, PascalObject, BndBox, size_block
 
@@ -44,6 +47,7 @@ if __name__ == '__main__':
 ```
 
 ##### Convert to [labelme](https://github.com/wkentaro/labelme) format
+
 ```
 from pathlib import Path
 import json
@@ -62,9 +66,36 @@ if __name__ == '__main__':
         with open(out / f"{file.stem}.json", "w") as f:
             json.dump(lbl_me, f)
 ```
+
 ![Labelme](labelme.png "Labelme")
 
+##### Convert to YOLO format
+
+```
+from pathlib import Path
+
+from pascal import PascalVOC
+
+ds = Path("xmls")
+
+label_map = {
+    "plate": 0,
+    "other": 1,
+    "taxi": 2,
+    "standard": 3
+}
+
+if __name__ == '__main__':
+    for file in ds.glob("*.xml"):
+        ann = PascalVOC.from_xml(file)
+        yolo = ann.to_yolo(label_map)
+        out_name = f"{file.stem}.txt"
+        with open(out_name, "w") as f:
+            f.write(yolo)
+```
+
 #### Installation
+
 ```
 python setup.py install
 ```
