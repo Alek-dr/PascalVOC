@@ -263,6 +263,21 @@ class PascalVOC:
         s = f"<annotation>{head}{objects}\n</annotation>"
         return s
 
+    def __iter__(self):
+        self.n = 0
+        return self
+
+    def __len__(self):
+        return len(self.objects)
+
+    def __next__(self):
+        if self.n < len(self):
+            obj = self.objects[self.n]
+            self.n += 1
+            return obj
+        else:
+            raise StopIteration
+
     def to_xml(self, drop_path: bool = False,
                drop_folder: bool = False,
                drop_source: bool = False,
