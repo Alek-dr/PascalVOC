@@ -229,6 +229,37 @@ class PascalVOC:
                 objects_.append(obj_)
         except IndexError as ex:
             raise ParseException(ex)
+        return PascalVOC(filename, size, objects_, path, folder, segmented, database) \
+
+    @classmethod
+    def _parse_yolo(cls, path: Union[Path, str], data: List[str], size: size_block, labels_map: dict):
+        if isinstance(path, str):
+            path = Path(path)
+        try:
+            filename = path.name
+            folder = None
+            database = str()
+            segmented = 0
+            objects_ = []
+            for line in data:
+                obj_ = PascalObject()
+                try:
+                    class_id, xc, yc, dx, dy = line.split()
+                except ValueError:
+                    continue
+                obj_.name = labels_map.get(int(class_id))
+                xc = float(xc) * size.width
+                yc = float(yc) * size.height
+                dx = (0.5 * float(dx)) * size.width
+                dy = (0.5 * float(dy)) * size.height
+                xmin = int(xc - dx)
+                xmax = int(xc + dx)
+                ymin = int(yc - dy)
+                ymax = int(yc + dy)
+                obj_.bndbox = BndBox(xmin, ymin, xmax, ymax)
+                objects_.append(obj_)
+        except IndexError as ex:
+            raise ParseException(ex)
         return PascalVOC(filename, size, objects_, path, folder, segmented, database)
 
     @classmethod
@@ -238,6 +269,12 @@ class PascalVOC:
         """
         doc = xml.parse(str(path))
         return PascalVOC._parse(doc)
+
+    @classmethod
+    def from_yolo(cls, path: Union[Path, str], size: size_block, labels_map: dict):
+        with open(path, "r") as f:
+            data = f.readlines()
+        return PascalVOC._parse_yolo(path, data, size, labels_map)
 
     @classmethod
     def from_bytes(cls, bdata):
