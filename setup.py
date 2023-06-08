@@ -5,10 +5,10 @@ with open("README.md", "r") as f:
 
 setuptools.setup(
     name="pascal_voc",
-    version="0.0.4",
+    version="0.0.5",
     author="Alexander Barmin",
     author_email="barmin1@mail.ru",
-    description="Working with PascalVOC annotations",
+    description="Tool to work with annotation formats",
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),

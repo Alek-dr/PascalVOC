@@ -219,7 +219,8 @@ class PascalVOC:
             size_tag = doc.find("size")
             width = int(size_tag.find("width").text)
             height = int(size_tag.find("height").text)
-            depth = int(size_tag.find("depth").text)
+            depth_ = size_tag.find("depth")
+            depth = int(depth_.text) if depth_ is not None else 3
             size = size_block(width, height, depth)
             segmented_ = doc.find("segmented")
             if segmented_:
