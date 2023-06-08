@@ -51,13 +51,13 @@ class BndBox(namedtuple("BndBox", ["xmin", "ymin", "xmax", "ymax"])):
 
 class PascalObject:
     def __init__(
-        self,
-        name: str = str(),
-        pose: str = "Unspecified",
-        truncated: bool = False,
-        difficult: bool = False,
-        bndbox: BndBox = None,
-        **kwargs,
+            self,
+            name: str = str(),
+            pose: str = "Unspecified",
+            truncated: bool = False,
+            difficult: bool = False,
+            bndbox: BndBox = None,
+            **kwargs,
     ):
         self._name = name
         self._pose = pose
@@ -183,14 +183,14 @@ class PascalObject:
 
 class PascalVOC:
     def __init__(
-        self,
-        filename: Union[Path, str],
-        size: size_block,
-        objects: List[PascalObject] = None,
-        path: Path = None,
-        folder: str = None,
-        segmented: int = 0,
-        database: str = "Unknown",
+            self,
+            filename: Union[Path, str],
+            size: size_block,
+            objects: List[PascalObject] = None,
+            path: Path = None,
+            folder: str = None,
+            segmented: int = 0,
+            database: str = "Unknown",
     ):
         if isinstance(filename, Path):
             self.filename = filename.name
@@ -203,14 +203,24 @@ class PascalVOC:
         self.segmented = segmented
         self.objects = objects if objects is not None else []
 
+    @staticmethod
+    def _get_attribute(doc, attr_name, attr_type, default=None):
+        attr_ = doc.find(attr_name)
+        if attr_ is not None:
+            try:
+                val = attr_type(attr_.text)
+            except TypeError:
+                return default
+            else:
+                return val
+        return None
+
     @classmethod
     def _parse(cls, doc):
         try:
             filename = doc.find("filename").text
-            path_ = doc.find("path")
-            path = Path(path_.text) if path_ is not None else None
-            folder_ = doc.find("folder")
-            folder = folder_.text if folder_ is not None else None
+            path = PascalVOC._get_attribute(doc, "path", Path)
+            folder = PascalVOC._get_attribute(doc, "folder", str)
             source = doc.find("source")
             if source:
                 database = source.find("database").text
@@ -219,8 +229,7 @@ class PascalVOC:
             size_tag = doc.find("size")
             width = int(size_tag.find("width").text)
             height = int(size_tag.find("height").text)
-            depth_ = size_tag.find("depth")
-            depth = int(depth_.text) if depth_ is not None else 3
+            depth = PascalVOC._get_attribute(size_tag, "depth", int, default=3)
             size = size_block(width, height, depth)
             segmented_ = doc.find("segmented")
             if segmented_:
@@ -250,7 +259,7 @@ class PascalVOC:
 
     @classmethod
     def _parse_yolo(
-        cls, path: Union[Path, str], data: List[str], size: size_block, labels_map: dict
+            cls, path: Union[Path, str], data: List[str], size: size_block, labels_map: dict
     ):
         if isinstance(path, str):
             path = Path(path)
@@ -337,13 +346,13 @@ class PascalVOC:
             raise StopIteration
 
     def to_xml(
-        self,
-        drop_path: bool = False,
-        drop_folder: bool = False,
-        drop_source: bool = False,
-        drop_pose: bool = False,
-        drop_segmented: bool = False,
-        drop_truncated: bool = False,
+            self,
+            drop_path: bool = False,
+            drop_folder: bool = False,
+            drop_source: bool = False,
+            drop_pose: bool = False,
+            drop_segmented: bool = False,
+            drop_truncated: bool = False,
     ) -> xml.Element:
         root = xml.Element("annotation")
         if not drop_folder:
@@ -465,15 +474,15 @@ class PascalVOC:
         return "\n".join(objects)
 
     def save(
-        self,
-        output: Union[Path, str],
-        drop_all=False,
-        drop_path: bool = False,
-        drop_folder: bool = False,
-        drop_source: bool = False,
-        drop_pose: bool = False,
-        drop_segmented: bool = False,
-        drop_truncated: bool = False,
+            self,
+            output: Union[Path, str],
+            drop_all=False,
+            drop_path: bool = False,
+            drop_folder: bool = False,
+            drop_source: bool = False,
+            drop_pose: bool = False,
+            drop_segmented: bool = False,
+            drop_truncated: bool = False,
     ) -> None:
         """Save pascal annotation to xml file"""
         if drop_all:
