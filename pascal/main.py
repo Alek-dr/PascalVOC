@@ -247,13 +247,13 @@ class PascalVOC:
                         else:
                             obj_.add_feature(field.tag, field.text)
                 box_tag = obj.find("bndbox")
-                xmin = int(box_tag.find("xmin").text)
-                ymin = int(box_tag.find("ymin").text)
-                xmax = int(box_tag.find("xmax").text)
-                ymax = int(box_tag.find("ymax").text)
+                xmin = int(float(box_tag.find("xmin").text))
+                ymin = int(float(box_tag.find("ymin").text))
+                xmax = int(float(box_tag.find("xmax").text))
+                ymax = int(float(box_tag.find("ymax").text))
                 obj_.bndbox = BndBox(xmin, ymin, xmax, ymax)
                 objects_.append(obj_)
-        except IndexError as ex:
+        except (IndexError, ValueError) as ex:
             raise ParseException(ex)
         return PascalVOC(filename, size, objects_, path, folder, segmented, database)
 
