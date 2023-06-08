@@ -95,7 +95,11 @@ if __name__ == '__main__':
 ```
 
 #### Installation
-
+From source 
 ```
 python setup.py install
+```
+Using pip
+```
+pip install pascal-voc
 ```
