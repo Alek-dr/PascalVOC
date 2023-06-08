@@ -1,12 +1,12 @@
 import base64
+import xml.etree.ElementTree as xml
 from collections import namedtuple
 from io import BytesIO
-
-import xml.etree.ElementTree as xml
-from lxml import etree
 from pathlib import Path
-from PIL import Image
 from typing import List, Union
+
+from lxml import etree
+from PIL import Image
 
 size_block = namedtuple("size", "width,height,depth")
 
@@ -26,9 +26,11 @@ class BndBox(namedtuple("BndBox", ["xmin", "ymin", "xmax", "ymax"])):
     __slots__ = ()
 
     def __str__(self):
-        return f"<bndbox>\n\t<xmin>{self.xmin}</xmin>\n" \
-               f"\t<ymin>{self.ymin}</ymin>\n\t<xmax>{self.xmax}" \
-               f"</xmax>\n\t<ymax>{self.ymax}</ymax>\n</bndbox>"
+        return (
+            f"<bndbox>\n\t<xmin>{self.xmin}</xmin>\n"
+            f"\t<ymin>{self.ymin}</ymin>\n\t<xmax>{self.xmax}"
+            f"</xmax>\n\t<ymax>{self.ymax}</ymax>\n</bndbox>"
+        )
 
     def to_xml(self):
         bndbox = xml.Element("bndbox")
@@ -48,12 +50,15 @@ class BndBox(namedtuple("BndBox", ["xmin", "ymin", "xmax", "ymax"])):
 
 
 class PascalObject:
-
-    def __init__(self, name: str = str(),
-                 pose: str = "Unspecified",
-                 truncated: bool = False,
-                 difficult: bool = False,
-                 bndbox: BndBox = None, **kwargs):
+    def __init__(
+        self,
+        name: str = str(),
+        pose: str = "Unspecified",
+        truncated: bool = False,
+        difficult: bool = False,
+        bndbox: BndBox = None,
+        **kwargs,
+    ):
         self._name = name
         self._pose = pose
         self._truncated = truncated
@@ -91,7 +96,8 @@ class PascalObject:
             self._truncated = False if truncated == 0 else True
         else:
             raise ParseException(
-                f"Cannot understand truncated field of type: {type(truncated)}. truncated one of type: bool. str, int")
+                f"Cannot understand truncated field of type: {type(truncated)}. truncated one of type: bool. str, int"
+            )
 
     @property
     def difficult(self):
@@ -107,7 +113,8 @@ class PascalObject:
             self._truncated = False if difficult == 0 else True
         else:
             raise ParseException(
-                f"Cannot understand difficult field of type: {type(difficult)}. truncated one of type: bool. str, int")
+                f"Cannot understand difficult field of type: {type(difficult)}. truncated one of type: bool. str, int"
+            )
 
     @property
     def bndbox(self):
@@ -128,7 +135,14 @@ class PascalObject:
         for k, v in self.other_fields.items():
             line = f"<{k}>{v}</{k}>"
             other_attributes.append(line)
-        attributes = [name, pose, truncated, difficult, *other_attributes, str(self.bndbox)]
+        attributes = [
+            name,
+            pose,
+            truncated,
+            difficult,
+            *other_attributes,
+            str(self.bndbox),
+        ]
         s_attributes = list(map(_add_tab, attributes))
         s = "\n".join(s_attributes)
         h = f"<object>\n{s}\n</object>"
@@ -168,14 +182,16 @@ class PascalObject:
 
 
 class PascalVOC:
-
-    def __init__(self, filename: Union[Path, str],
-                 size: size_block,
-                 objects: List[PascalObject] = None,
-                 path: Path = None,
-                 folder: str = None,
-                 segmented: int = 0,
-                 database: str = "Unknown"):
+    def __init__(
+        self,
+        filename: Union[Path, str],
+        size: size_block,
+        objects: List[PascalObject] = None,
+        path: Path = None,
+        folder: str = None,
+        segmented: int = 0,
+        database: str = "Unknown",
+    ):
         if isinstance(filename, Path):
             self.filename = filename.name
         else:
@@ -215,7 +231,7 @@ class PascalVOC:
             for obj in objects:
                 obj_ = PascalObject()
                 for field in obj:
-                    if field.tag != 'bndbox':
+                    if field.tag != "bndbox":
                         if hasattr(obj_, field.tag):
                             setattr(obj_, field.tag, field.text)
                         else:
@@ -229,10 +245,12 @@ class PascalVOC:
                 objects_.append(obj_)
         except IndexError as ex:
             raise ParseException(ex)
-        return PascalVOC(filename, size, objects_, path, folder, segmented, database) \
+        return PascalVOC(filename, size, objects_, path, folder, segmented, database)
 
     @classmethod
-    def _parse_yolo(cls, path: Union[Path, str], data: List[str], size: size_block, labels_map: dict):
+    def _parse_yolo(
+        cls, path: Union[Path, str], data: List[str], size: size_block, labels_map: dict
+    ):
         if isinstance(path, str):
             path = Path(path)
         try:
@@ -282,19 +300,21 @@ class PascalVOC:
         return PascalVOC._parse(doc)
 
     def __str__(self):
-        head = f"\n\t<folder>{self.folder}</folder>" \
-               f"\n\t<filename>{self.filename}</filename>" \
-               f"\n\t<path>{str(self.path)}</path>" \
-               f"\n\t<source>" \
-               f"\n\t\t<database>{self.database}</database>" \
-               f"\n\t</source>\n" \
-               f"\t<size>" \
-               f"\n\t\t<width>{self.size.width}</width>" \
-               f"\n\t\t<height>{self.size.height}</height>" \
-               f"\n\t\t<depth>{self.size.depth}" \
-               f"</depth>" \
-               f"\n\t</size>" \
-               f"\n\t<segmented>{self.segmented}</segmented>\n"
+        head = (
+            f"\n\t<folder>{self.folder}</folder>"
+            f"\n\t<filename>{self.filename}</filename>"
+            f"\n\t<path>{str(self.path)}</path>"
+            f"\n\t<source>"
+            f"\n\t\t<database>{self.database}</database>"
+            f"\n\t</source>\n"
+            f"\t<size>"
+            f"\n\t\t<width>{self.size.width}</width>"
+            f"\n\t\t<height>{self.size.height}</height>"
+            f"\n\t\t<depth>{self.size.depth}"
+            f"</depth>"
+            f"\n\t</size>"
+            f"\n\t<segmented>{self.segmented}</segmented>\n"
+        )
         objects = "\n".join([str(obj) for obj in self.objects])
         objects = _add_tab(objects)
         s = f"<annotation>{head}{objects}\n</annotation>"
@@ -315,12 +335,15 @@ class PascalVOC:
         else:
             raise StopIteration
 
-    def to_xml(self, drop_path: bool = False,
-               drop_folder: bool = False,
-               drop_source: bool = False,
-               drop_pose: bool = False,
-               drop_segmented: bool = False,
-               drop_truncated: bool = False) -> xml.Element:
+    def to_xml(
+        self,
+        drop_path: bool = False,
+        drop_folder: bool = False,
+        drop_source: bool = False,
+        drop_pose: bool = False,
+        drop_segmented: bool = False,
+        drop_truncated: bool = False,
+    ) -> xml.Element:
         root = xml.Element("annotation")
         if not drop_folder:
             folder = xml.Element("folder")
@@ -369,9 +392,9 @@ class PascalVOC:
     def base64img(img, img_path) -> str:
         buffered = BytesIO()
         suffix = img_path.suffix
-        if suffix in ['.JPG', ".jpg", '.JPEG', '.jpeg']:
+        if suffix in [".JPG", ".jpg", ".JPEG", ".jpeg"]:
             format = "JPEG"
-        elif suffix in ['.PNG', ".png"]:
+        elif suffix in [".PNG", ".png"]:
             format = "PNG"
         else:
             format = "PNG"
@@ -398,16 +421,18 @@ class PascalVOC:
         shapes = []
         for obj in self.objects:
             label = obj.name
-            points = [[obj.bndbox.xmin, obj.bndbox.ymin],
-                      [obj.bndbox.xmax, obj.bndbox.ymin],
-                      [obj.bndbox.xmax, obj.bndbox.ymax],
-                      [obj.bndbox.xmin, obj.bndbox.ymax]]
+            points = [
+                [obj.bndbox.xmin, obj.bndbox.ymin],
+                [obj.bndbox.xmax, obj.bndbox.ymin],
+                [obj.bndbox.xmax, obj.bndbox.ymax],
+                [obj.bndbox.xmin, obj.bndbox.ymax],
+            ]
             shape = dict(
                 label=label,
                 points=points,
                 group_id=None,
                 shape_type="polygon",
-                flags={}
+                flags={},
             )
             shapes.append(shape)
 
@@ -418,7 +443,7 @@ class PascalVOC:
             imagePath=str(img_path),
             imageData=encoded_string,
             imageHeight=self.size.height,
-            imageWidth=self.size.width
+            imageWidth=self.size.width,
         )
         return res
 
@@ -438,26 +463,36 @@ class PascalVOC:
             objects.append(s)
         return "\n".join(objects)
 
-    def save(self, output: Union[Path, str],
-             drop_all=False,
-             drop_path: bool = False,
-             drop_folder: bool = False,
-             drop_source: bool = False,
-             drop_pose: bool = False,
-             drop_segmented: bool = False,
-             drop_truncated: bool = False) -> None:
+    def save(
+        self,
+        output: Union[Path, str],
+        drop_all=False,
+        drop_path: bool = False,
+        drop_folder: bool = False,
+        drop_source: bool = False,
+        drop_pose: bool = False,
+        drop_segmented: bool = False,
+        drop_truncated: bool = False,
+    ) -> None:
         """Save pascal annotation to xml file"""
         if drop_all:
-            drop_path = True,
-            drop_folder = True,
-            drop_source = True,
-            drop_pose = True,
-            drop_segmented = True,
+            drop_path = (True,)
+            drop_folder = (True,)
+            drop_source = (True,)
+            drop_pose = (True,)
+            drop_segmented = (True,)
             drop_truncated = True
-        doc = self.to_xml(drop_path, drop_folder, drop_source, drop_pose, drop_segmented, drop_truncated)
+        doc = self.to_xml(
+            drop_path,
+            drop_folder,
+            drop_source,
+            drop_pose,
+            drop_segmented,
+            drop_truncated,
+        )
         tree = xml.ElementTree(doc)
         with open(output, "w") as out:
-            tree.write(out, encoding='unicode', method='xml')
+            tree.write(out, encoding="unicode", method="xml")
 
     def add_object(self, obj: PascalObject) -> None:
         self.objects.append(obj)
