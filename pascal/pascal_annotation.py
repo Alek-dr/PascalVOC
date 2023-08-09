@@ -1,16 +1,13 @@
 import hashlib
 import random
-from copy import deepcopy
+from functools import lru_cache
 from pathlib import Path
 from typing import List, Optional, Union
 
 from PIL import Image, ImageDraw
-from xmlobj import get_xml_obj
-from xmlobj.xmlmapping import XMLMixin
 
-from pascal import ParseException
 from pascal.exceptions import InconsistentAnnotation
-from pascal.utils import _is_primitive, base64img
+from pascal.utils import base64img
 
 random.seed(32)
 
@@ -21,6 +18,7 @@ RAND_COLORS = [
 ]
 
 
+@lru_cache
 def get_name_hash(name: str) -> int:
     """
     https://stackoverflow.com/questions/16008670/how-to-hash-a-string-into-8-digits
@@ -65,6 +63,21 @@ class PascalAnnotationMixin:
             raise InconsistentAnnotation("Annotation has no attribute size.width")
         if not hasattr(self.size, "height"):
             raise InconsistentAnnotation("Annotation has no attribute size.height")
+
+    def check_objects(self):
+        for obj in self:
+            if not hasattr(obj, "name"):
+                raise InconsistentAnnotation("Object has no attribute name")
+            if not hasattr(obj, "bndbox"):
+                raise InconsistentAnnotation("Object has no attribute bndbox")
+            if not hasattr(obj.bndbox, "xmin"):
+                raise InconsistentAnnotation("Object has no attribute bndbox.xmin")
+            if not hasattr(obj.bndbox, "ymin"):
+                raise InconsistentAnnotation("Object has no attribute bndbox.ymin")
+            if not hasattr(obj.bndbox, "xmax"):
+                raise InconsistentAnnotation("Object has no attribute bndbox.xmax")
+            if not hasattr(obj.bndbox, "ymax"):
+                raise InconsistentAnnotation("Object has no attribute bndbox.ymax")
 
     def draw_boxes(
         self,
@@ -123,6 +136,7 @@ class PascalAnnotationMixin:
         Yolo format annotation str
         """
         self.check_annotation()
+        self.check_objects()
         objects = []
         for obj in self.objects:
             label = labels_map[obj.name]
@@ -158,6 +172,7 @@ class PascalAnnotationMixin:
         labelme annotation dict which can be saved as json
         """
         self.check_annotation()
+        self.check_objects()
         if not img_path.exists():
             raise FileNotFoundError(f"There no file: {img_path}")
 
@@ -194,28 +209,3 @@ class PascalAnnotationMixin:
             imageWidth=self.size.width,
         )
         return res
-
-
-ann_type = type("Annotation", (XMLMixin, PascalAnnotationMixin), {})
-
-
-def annotation_from_xml(
-    file_path: Union[str, Path], attr_type_spec: Optional[dict] = None
-) -> ann_type:
-    try:
-        obj = get_xml_obj(
-            file_path, mixin_cls=PascalAnnotationMixin, attr_type_spec=attr_type_spec
-        )
-    except Exception as ex:
-        raise ParseException(ex)
-    if hasattr(obj, "object"):
-        obj_ = getattr(obj, "object")
-        if isinstance(obj_, list):
-            objects = [deepcopy(obj) for obj in obj_]
-        elif not _is_primitive(obj_):
-            objects = [deepcopy(obj_)]
-        else:
-            raise ParseException("Cannot parse objects")
-        setattr(obj, "_objects", objects)
-        delattr(obj, "object")
-    return obj
