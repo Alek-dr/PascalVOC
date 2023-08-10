@@ -45,5 +45,5 @@ def annotation_from_xml(
         setattr(obj, "_objects", objects)
         delattr(obj, "object")
     obj.check_annotation()
-    obj.check_objects()
+    # obj.check_objects()
     return obj

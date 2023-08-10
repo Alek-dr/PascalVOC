@@ -26,11 +26,23 @@ def get_name_hash(name: str) -> int:
     return abs(int(hashlib.sha1(name.encode("utf-8")).hexdigest(), 16) % n_colors)
 
 
+def is_pascal_object(obj) -> bool:
+    """
+    Check if object has pascal interface
+    """
+    if hasattr(obj, "name") and hasattr(obj, "bndbox"):
+        if hasattr(obj.bndbox, "xmin") and hasattr(obj.bndbox, "ymin"):
+            if hasattr(obj.bndbox, "xmax") and hasattr(obj.bndbox, "ymax"):
+                return True
+    return False
+
+
 class PascalAnnotationMixin:
     """
     Provides useful annotation functionality:
         * draw annotations
         * convert to yolo
+        * convert to labelme
     """
 
     def __init__(self):
@@ -40,21 +52,11 @@ class PascalAnnotationMixin:
     def objects(self) -> List:
         return self._objects
 
-    # TODO: refactor iterator
-    def __iter__(self):
-        self._n = 0
-        return self
-
     def __len__(self):
         return len(self._objects)
 
-    def __next__(self):
-        if self._n < len(self):
-            obj = self.objects[self._n]
-            self._n += 1
-            return obj
-        else:
-            raise StopIteration
+    def __getitem__(self, item):
+        return self._objects[item]
 
     def check_annotation(self):
         if not hasattr(self, "size"):
@@ -103,21 +105,22 @@ class PascalAnnotationMixin:
         img_draw = ImageDraw.Draw(img_copy)
         set_color = color is None
         for obj in self:
-            if set_color:
-                hash_id = get_name_hash(obj.name)
-                color = RAND_COLORS[hash_id]
-            # draw rectangle
-            p1 = (float(obj.bndbox.xmin), float(obj.bndbox.ymin))
-            p2 = (float(obj.bndbox.xmax), float(obj.bndbox.ymax))
-            img_draw.rectangle((p1, p2), outline=color, width=width)
-            # draw text
-            text_coord = (
-                float(obj.bndbox.xmin + width + 1),
-                float(obj.bndbox.ymin + width + 1),
-            )
-            text_box = img_draw.textbbox(text_coord, obj.name)
-            img_draw.rectangle(text_box, fill=(32, 32, 28))
-            img_draw.text(text_coord, obj.name, align="left")
+            if is_pascal_object(obj):
+                if set_color:
+                    hash_id = get_name_hash(obj.name)
+                    color = RAND_COLORS[hash_id]
+                # draw rectangle
+                p1 = (float(obj.bndbox.xmin), float(obj.bndbox.ymin))
+                p2 = (float(obj.bndbox.xmax), float(obj.bndbox.ymax))
+                img_draw.rectangle((p1, p2), outline=color, width=width)
+                # draw text
+                text_coord = (
+                    float(obj.bndbox.xmin + width + 1),
+                    float(obj.bndbox.ymin + width + 1),
+                )
+                text_box = img_draw.textbbox(text_coord, obj.name)
+                img_draw.rectangle(text_box, fill=(32, 32, 28))
+                img_draw.text(text_coord, obj.name, align="left")
         return img_copy
 
     def to_yolo(self, labels_map: dict, precision: int = 3) -> str:
@@ -136,20 +139,21 @@ class PascalAnnotationMixin:
         Yolo format annotation str
         """
         self.check_annotation()
-        self.check_objects()
+        # self.check_objects()
         objects = []
-        for obj in self.objects:
-            label = labels_map[obj.name]
-            dx = float(obj.bndbox.xmax - obj.bndbox.xmin)
-            dy = float(obj.bndbox.ymax - obj.bndbox.ymin)
-            x = obj.bndbox.xmin + dx * 0.5
-            y = obj.bndbox.ymin + dy * 0.5
-            dx /= self.size.width
-            dy /= self.size.height
-            x /= self.size.width
-            y /= self.size.height
-            s = f"{label} {x:.{precision}f} {y:.{precision}f} {dx:.{precision}f} {dy:.{precision}f}"
-            objects.append(s)
+        for obj in self:
+            if is_pascal_object(obj):
+                label = labels_map[obj.name]
+                dx = float(obj.bndbox.xmax - obj.bndbox.xmin)
+                dy = float(obj.bndbox.ymax - obj.bndbox.ymin)
+                x = obj.bndbox.xmin + dx * 0.5
+                y = obj.bndbox.ymin + dy * 0.5
+                dx /= self.size.width
+                dy /= self.size.height
+                x /= self.size.width
+                y /= self.size.height
+                s = f"{label} {x:.{precision}f} {y:.{precision}f} {dx:.{precision}f} {dy:.{precision}f}"
+                objects.append(s)
         return "\n".join(objects)
 
     def to_labelme(
@@ -172,7 +176,6 @@ class PascalAnnotationMixin:
         labelme annotation dict which can be saved as json
         """
         self.check_annotation()
-        self.check_objects()
         if not img_path.exists():
             raise FileNotFoundError(f"There no file: {img_path}")
 
@@ -183,21 +186,22 @@ class PascalAnnotationMixin:
 
         shapes = []
         for obj in self:
-            label = obj.name
-            points = [
-                [obj.bndbox.xmin, obj.bndbox.ymin],
-                [obj.bndbox.xmax, obj.bndbox.ymin],
-                [obj.bndbox.xmax, obj.bndbox.ymax],
-                [obj.bndbox.xmin, obj.bndbox.ymax],
-            ]
-            shape = dict(
-                label=label,
-                points=points,
-                group_id=None,
-                shape_type="polygon",
-                flags={},
-            )
-            shapes.append(shape)
+            if is_pascal_object(obj):
+                label = obj.name
+                points = [
+                    [obj.bndbox.xmin, obj.bndbox.ymin],
+                    [obj.bndbox.xmax, obj.bndbox.ymin],
+                    [obj.bndbox.xmax, obj.bndbox.ymax],
+                    [obj.bndbox.xmin, obj.bndbox.ymax],
+                ]
+                shape = dict(
+                    label=label,
+                    points=points,
+                    group_id=None,
+                    shape_type="polygon",
+                    flags={},
+                )
+                shapes.append(shape)
 
         res = dict(
             version=label_me_version,
