@@ -9,12 +9,10 @@ from pascal.exceptions import ParseException
 from pascal.pascal_annotation import PascalAnnotationMixin
 from pascal.utils import _is_primitive
 
-ann_type = type("Annotation", (XMLMixin, PascalAnnotationMixin), {})
-
 
 def annotation_from_xml(
     file_path: Union[str, Path], attr_type_spec: Optional[dict] = None
-) -> ann_type:
+) -> Union[XMLMixin, PascalAnnotationMixin]:
     """
     Make annotation object from PascalVOC annotation file
 
@@ -44,6 +42,4 @@ def annotation_from_xml(
             raise ParseException("Cannot parse objects")
         setattr(obj, "_objects", objects)
         delattr(obj, "object")
-    obj.check_annotation()
-    # obj.check_objects()
     return obj
