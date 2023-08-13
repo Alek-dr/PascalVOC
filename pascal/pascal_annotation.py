@@ -44,8 +44,9 @@ class PascalAnnotationMixin:
     """
 
     def __init__(self):
-        self._objects = []
-        self._size = None
+        self._objects: List[PascalObject] = []
+        self._size: Optional[Size] = None
+        self._filename: Optional[str] = None
 
     @property
     def objects(self) -> List:
@@ -61,6 +62,17 @@ class PascalAnnotationMixin:
             self._size = value
         else:
             raise ParseException(f"Incorrect size block: {value}")
+
+    @property
+    def filename(self) -> str:
+        return self._filename
+
+    @filename.setter
+    def filename(self, value):
+        if isinstance(value, str):
+            self._filename = value
+        else:
+            raise ParseException(f"Incorrect filename: {value}")
 
     def __len__(self):
         return len(self._objects)
@@ -209,3 +221,14 @@ class PascalAnnotationMixin:
             imageWidth=self.size.width,
         )
         return res
+
+
+def is_pascal_annotation(obj) -> bool:
+    if obj.filename is not None:
+        if isinstance(obj.size, Size):
+            if len(obj.objects):
+                if any(isinstance(obj, PascalObject) for obj in obj):
+                    return True
+            else:
+                return True
+    return False

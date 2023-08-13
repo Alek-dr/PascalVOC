@@ -5,8 +5,9 @@ from typing import Optional, Union
 from xmlobj import get_xml_obj
 from xmlobj.xmlmapping import XMLMixin
 
-from pascal.exceptions import ParseException
-from pascal.pascal_annotation import PascalAnnotationMixin
+from pascal.exceptions import InconsistentAnnotation, ParseException
+from pascal.pascal_annotation import (PascalAnnotationMixin,
+                                      is_pascal_annotation)
 from pascal.utils import _is_primitive
 
 
@@ -42,4 +43,6 @@ def annotation_from_xml(
             raise ParseException("Cannot parse objects")
         setattr(obj, "_objects", objects)
         delattr(obj, "object")
+    if not is_pascal_annotation(obj):
+        raise InconsistentAnnotation(f"File {file_path} is not PascalVOCAnnotation")
     return obj
