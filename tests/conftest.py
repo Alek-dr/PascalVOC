@@ -1,8 +1,10 @@
+from pathlib import Path
+
 import pytest
 
 annotations = [
     {
-        "file": "test_data/000001.xml",
+        "file": "test_data/valid_annotations/000001.xml",
         "n_objects": 2,
         "attributes": [
             {"attr_name": "folder", "attr_val": "VOC2007", "dtype": str},
@@ -47,7 +49,7 @@ annotations = [
         ],
     },
     {
-        "file": "test_data/000103.xml",
+        "file": "test_data/valid_annotations/000103.xml",
         "n_objects": 9,
         "attributes": [
             {"attr_name": "folder", "attr_val": "VOC2007", "dtype": str},
@@ -90,9 +92,20 @@ annotations = [
 ]
 
 invalid_annotations = [
-    "test_data/books.xml",
-    "test_data/cd_catalog.xml",
-    "test_data/000103_no_size.xml",
+    "test_data/invalid_annotations/books.xml",
+    "test_data/invalid_annotations/cd_catalog.xml",
+    "test_data/invalid_annotations/000103_no_size.xml",
+]
+
+valid_objects_list = [
+    {
+        "file": "test_data/valid_objects/000001.xml",
+    }
+]
+invalid_objects_list = [
+    {
+        "file": "test_data/invalid_objects/000001.xml",
+    }
 ]
 
 
@@ -104,3 +117,26 @@ def valid_annotations():
 @pytest.fixture
 def invalid_ann_files():
     return invalid_annotations
+
+
+@pytest.fixture
+def valid_objects():
+    return valid_objects_list
+
+
+@pytest.fixture
+def invalid_objects():
+    return invalid_objects_list
+
+
+@pytest.fixture
+def yolo_data():
+    data = Path("test_data/yolo_data")
+    files = []
+    with open(data / "classes.txt", "r") as f:
+        labels = f.readlines()
+    label_map = {name.strip(): i for i, name in enumerate(labels)}
+    for file in data.glob("*.xml"):
+        yolo_file = file.with_suffix(".txt")
+        files.append({"xml_ann_file": str(file), "yolo_ann_file": str(yolo_file), "label_map": label_map})
+    return files

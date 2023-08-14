@@ -1,0 +1,19 @@
+<annotation>
+	<object>
+		<name>dog</name>
+		<pose>Left</pose>
+		<truncated>1</truncated>
+		<difficult>0</difficult>
+	</object>
+	<object>
+		<pose>Left</pose>
+		<truncated>1</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>8</xmin>
+			<ymin>12</ymin>
+			<xmax>352</xmax>
+			<ymax>498</ymax>
+		</bndbox>
+	</object>
+</annotation>

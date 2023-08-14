@@ -17,12 +17,12 @@ def base64img(img: Image.Image, img_suffix: str) -> str:
     """
     buffered = BytesIO()
     if img_suffix in [".JPG", ".jpg", ".JPEG", ".jpeg"]:
-        format = "JPEG"
+        format_ = "JPEG"
     elif img_suffix in [".PNG", ".png"]:
-        format = "PNG"
+        format_ = "PNG"
     else:
-        format = "PNG"
-    img.save(buffered, format=format)
+        format_ = "PNG"
+    img.save(buffered, format=format_)
     buffered.seek(0)
     img_byte = buffered.getvalue()
     encoded_string = base64.b64encode(img_byte).decode("utf-8")

@@ -1,0 +1,15 @@
+products
+cart
+dog
+person
+train
+sofa
+chair
+car
+pottedplant
+diningtable
+horse
+cat
+cow
+bus
+bicycle

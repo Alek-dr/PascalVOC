@@ -141,7 +141,7 @@ class PascalAnnotationMixin:
         """
         if not isinstance(self.size, Size):
             raise InconsistentAnnotation(
-                "Incorrect size. Size must have width, height attributes"
+                "Incorrect size. Size must have width and height attributes"
             )
 
         objects = []
