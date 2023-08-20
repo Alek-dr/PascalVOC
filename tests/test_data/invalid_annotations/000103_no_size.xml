@@ -1,0 +1,27 @@
+<annotation>
+	<folder>VOC2007</folder>
+	<filename>000103.jpg</filename>
+	<source>
+		<database>The VOC2007 Database</database>
+		<annotation>PASCAL VOC2007</annotation>
+		<image>flickr</image>
+		<flickrid>341439304</flickrid>
+	</source>
+	<owner>
+		<flickrid>mgmakati</flickrid>
+		<name>?</name>
+	</owner>
+	<segmented>0</segmented>
+	<object>
+		<name>car</name>
+		<pose>Unspecified</pose>
+		<truncated>1</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1</xmin>
+			<ymin>241</ymin>
+			<xmax>47</xmax>
+			<ymax>276</ymax>
+		</bndbox>
+	</object>
+</annotation>

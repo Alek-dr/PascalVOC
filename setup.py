@@ -5,14 +5,14 @@ with open("README.md", "r") as f:
 
 setuptools.setup(
     name="pascal_voc",
-    version="0.0.7",
+    version="2.0.0",
     author="Alexander Barmin",
     author_email="barmin1@mail.ru",
     description="Tool to work with annotation formats",
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
-    install_requires=["lxml>=4.6.2", "Pillow>=8.1.0"],
+    install_requires=["lxml>=4.6.2", "Pillow>=8.1.0", "xmltodict"],
     license="MIT",
     classifiers=[
         "Programming Language :: Python :: 3",
