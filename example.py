@@ -1,12 +1,3 @@
-### pascal
-
-Python utility to work with PascalVoc annotation format
-
-Image examples from [PascalVoc2007](hhttp://host.robots.ox.ac.uk/pascal/VOC/voc2007/) dataset
-
-##### Code Example
-
-```
 import json
 from pathlib import Path
 
@@ -50,14 +41,3 @@ if __name__ == "__main__":
         img = Image.open(file)
         draw_img = ann.draw_boxes(img)
         draw_img.show()
-```
-
-#### Installation
-From source 
-```
-python setup.py install
-```
-Using pip
-```
-pip install pascal-voc
-```

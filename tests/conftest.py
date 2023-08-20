@@ -138,5 +138,11 @@ def yolo_data():
     label_map = {name.strip(): i for i, name in enumerate(labels)}
     for file in data.glob("*.xml"):
         yolo_file = file.with_suffix(".txt")
-        files.append({"xml_ann_file": str(file), "yolo_ann_file": str(yolo_file), "label_map": label_map})
+        files.append(
+            {
+                "xml_ann_file": str(file),
+                "yolo_ann_file": str(yolo_file),
+                "label_map": label_map,
+            }
+        )
     return files

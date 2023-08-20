@@ -10,7 +10,7 @@ from typing_extensions import Protocol, runtime_checkable
 
 from pascal.exceptions import InconsistentAnnotation, ParseException
 from pascal.pascal_object import PascalObject
-from pascal.utils import base64img
+from pascal.utils import _is_primitive, base64img
 
 random.seed(32)
 
@@ -35,6 +35,38 @@ class Size(Protocol):
     height: Union[float, int]
 
 
+def get_shapes(obj_data) -> List[dict]:
+    if len(obj_data) == 0:
+        return []
+    shapes = []
+    for obj in obj_data:
+        if not isinstance(obj, PascalObject):
+            logging.warning("Annotation has object which is not PascalObject")
+            continue
+        label = obj.name
+        points = [
+            [obj.bndbox.xmin, obj.bndbox.ymin],
+            [obj.bndbox.xmax, obj.bndbox.ymin],
+            [obj.bndbox.xmax, obj.bndbox.ymax],
+            [obj.bndbox.xmin, obj.bndbox.ymax],
+        ]
+        obj_flags = {}
+        for k, v in obj.__dict__.items():
+            if _is_primitive(v) and k != "name":
+                obj_flags[k] = v
+            if isinstance(v, list):
+                shapes.extend(get_shapes(v))
+        shape = dict(
+            label=label,
+            points=points,
+            group_id=None,
+            shape_type="polygon",
+            flags=obj_flags,
+        )
+        shapes.append(shape)
+    return shapes
+
+
 class PascalAnnotationMixin:
     """
     Provides useful annotation functionality:
@@ -46,7 +78,7 @@ class PascalAnnotationMixin:
     def __init__(self):
         self._objects: List[PascalObject] = []
         self._size: Optional[Size] = None
-        self._filename: Optional[str] = None
+        self.filename: Optional[str] = None
 
     @property
     def objects(self) -> List:
@@ -62,17 +94,6 @@ class PascalAnnotationMixin:
             self._size = value
         else:
             raise ParseException(f"Incorrect size block: {value}")
-
-    @property
-    def filename(self) -> str:
-        return self._filename
-
-    @filename.setter
-    def filename(self, value):
-        if isinstance(value, str):
-            self._filename = value
-        else:
-            raise ParseException(f"Incorrect filename: {value}")
 
     def __len__(self):
         return len(self._objects)
@@ -166,7 +187,7 @@ class PascalAnnotationMixin:
         self,
         img_path: Union[str, Path] = None,
         save_img_data: bool = False,
-        label_me_version: str = "4.5.6",
+        label_me_version: str = "5.3.0",
     ) -> dict:
         """
         Convert annotation to labelme format
@@ -179,7 +200,6 @@ class PascalAnnotationMixin:
 
         Returns
         -------
-        +
         labelme annotation dict which can be saved as json
         """
         if not img_path.exists():
@@ -190,26 +210,7 @@ class PascalAnnotationMixin:
             img = Image.open(img_path)
             encoded_string = base64img(img, img_path.suffix)
 
-        shapes = []
-        for obj in self:
-            if not isinstance(obj, PascalObject):
-                logging.warning("Annotation has object which is not PascalObject")
-                continue
-            label = obj.name
-            points = [
-                [obj.bndbox.xmin, obj.bndbox.ymin],
-                [obj.bndbox.xmax, obj.bndbox.ymin],
-                [obj.bndbox.xmax, obj.bndbox.ymax],
-                [obj.bndbox.xmin, obj.bndbox.ymax],
-            ]
-            shape = dict(
-                label=label,
-                points=points,
-                group_id=None,
-                shape_type="polygon",
-                flags={},
-            )
-            shapes.append(shape)
+        shapes = get_shapes(self.objects)
 
         res = dict(
             version=label_me_version,

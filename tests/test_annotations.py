@@ -1,6 +1,6 @@
 import pytest
-
 from xmlobj.xmlmapping import get_xml_obj
+
 from pascal import annotation_from_xml
 from pascal.exceptions import InconsistentAnnotation
 from pascal.pascal_object import PascalObject
@@ -37,6 +37,7 @@ def test_invalid_annotations(invalid_ann_files):
         with pytest.raises(InconsistentAnnotation):
             annotation_from_xml(file)
 
+
 def test_valid_objects(valid_objects):
     """
     Проверить параметры объектов
@@ -45,6 +46,7 @@ def test_valid_objects(valid_objects):
         objects = get_xml_obj(obj_params.get("file"))
         for obj in objects.object:
             assert isinstance(obj, PascalObject)
+
 
 def test_invalid_objects(invalid_objects):
     """
