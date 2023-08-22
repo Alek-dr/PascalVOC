@@ -32,7 +32,7 @@ def base64img(img: Image.Image, img_suffix: str) -> str:
     return encoded_string
 
 
-def save_xml(xml_obj, output: Union[str, Path]):
+def save_xml(output: Union[str, Path], xml_obj):
     """
     Save object to output file
     """

@@ -6,7 +6,7 @@ from PIL import Image
 from pascal import annotation_from_xml
 from pascal.utils import save_xml
 
-ds_path = Path("/home/VOCtest_06-Nov-2007/VOCdevkit/VOC2007")
+ds_path = Path("/media/alexander/D/datasets/Public/VOCtest_06-Nov-2007/VOCdevkit/VOC2007")
 
 img_src = ds_path / "JPEGImages"
 ann_src = ds_path / "Annotations"
@@ -27,17 +27,17 @@ if __name__ == "__main__":
         # Save to xml file (same as ann_file)
         xml = ann.to_xml()
         out_xml_name = file.with_suffix(".xml").name
-        save_xml(xml, out_xml_name)
+        save_xml(out_xml_name, xml)
         # Save yolo annotation
         yolo_ann = ann.to_yolo(label_map)
         out_yolo_name = file.with_suffix(".txt").name
         with open(out_yolo_name, "w") as f:
             f.write(yolo_ann)
-        # Convert to labelme and save json file
+        # # Convert to labelme and save json file
         res = ann.to_labelme(file, save_img_data=False)
         with open((out_labelme / file.name).with_suffix(".json"), "w") as f:
             json.dump(res, f, indent=2)
-        # Draw objects
+        # # Draw objects
         img = Image.open(file)
         draw_img = ann.draw_boxes(img)
         draw_img.show()
