@@ -6,10 +6,11 @@ from xmlobj.xmlmapping import XMLMixin
 
 from pascal.draw_objects import DrawObjectsMixin
 from pascal.exceptions import InconsistentAnnotation
+from pascal.format_convertor import FormatConvertorMixin
 from pascal.protocol_implementations import BBox, PascalObject, Size
 
 
-class PascalAnnotation(DrawObjectsMixin, XMLMixin):
+class PascalAnnotation(DrawObjectsMixin, XMLMixin, FormatConvertorMixin):
     def __init__(
         self, filename: Union[Path, str], objects: List[PascalObject], size: Size
     ):
