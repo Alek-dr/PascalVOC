@@ -4,9 +4,7 @@ from PIL import Image
 
 from pascal import annotation_from_yolo
 
-ds_path = Path(
-    "/media/alexander/D/datasets/Public/VOCtest_06-Nov-2007/VOCdevkit/VOC2007"
-)
+ds_path = Path("/home/VOCtest_06-Nov-2007/VOCdevkit/VOC2007")
 
 label_map = {0: "dog", 1: "car", 2: "person", 3: "train", 4: "chair", 5: "sofa"}
 
