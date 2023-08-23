@@ -36,7 +36,7 @@ if __name__ == "__main__":
         # Save to xml file (same as ann_file)
         xml = ann.to_xml()
         out_xml_name = file.with_suffix(".xml").name
-        save_xml(xml, out_xml_name)
+        save_xml(out_xml_name, xml)
         # Save yolo annotation
         yolo_ann = ann.to_yolo(label_map)
         out_yolo_name = file.with_suffix(".txt").name
