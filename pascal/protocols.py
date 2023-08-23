@@ -1,4 +1,6 @@
-from typing import Union, List, Optional
+from operator import itemgetter
+from typing import List, Optional, Union
+
 from typing_extensions import Protocol, runtime_checkable
 
 
@@ -33,3 +35,14 @@ class PascalAnnotation(Protocol):
 
     def __getitem__(self, item):
         return self.objects[item]
+
+    def filter_objects(self, names: List):
+        """Filter objects by names"""
+        ind = []
+        for i, obj in enumerate(self.objects):
+            if obj.name not in names:
+                ind.append(i)
+        if len(ind) == 0:
+            self.objects = list()
+        elif len(ind) < len(self.objects):
+            self.objects = [itemgetter(*ind)(self.objects)]

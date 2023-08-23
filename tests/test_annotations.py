@@ -1,8 +1,9 @@
 import pytest
+from xmlobj.xmlmapping import get_xml_obj
+
 from pascal import annotation_from_xml
 from pascal.exceptions import InconsistentAnnotation
 from pascal.protocols import PascalObject
-from xmlobj.xmlmapping import get_xml_obj
 
 
 def check_attributes(obj, attr_params):

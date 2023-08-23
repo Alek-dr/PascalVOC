@@ -1,12 +1,12 @@
 import logging
 from pathlib import Path
-from typing import Union, List
+from typing import List, Union
 
-from pascal.utils import base64img, _is_primitive
+from PIL import Image
 
 from pascal.exceptions import InconsistentAnnotation
-from pascal.protocols import PascalAnnotation, Size, PascalObject
-from PIL import Image
+from pascal.protocols import PascalAnnotation, PascalObject, Size
+from pascal.utils import _is_primitive, base64img
 
 
 def get_shapes(obj_data) -> List[dict]:
@@ -42,7 +42,6 @@ def get_shapes(obj_data) -> List[dict]:
 
 
 class FormatConvertorMixin(PascalAnnotation):
-
     def to_yolo(self, labels_map: dict, precision: int = 3) -> str:
         """
         Convert annotation to yolo format str
@@ -68,7 +67,11 @@ class FormatConvertorMixin(PascalAnnotation):
             if not isinstance(obj, PascalObject):
                 logging.warning("Annotation has object which is not PascalObject")
                 continue
-            label = labels_map[obj.name]
+            try:
+                label = labels_map[obj.name]
+            except KeyError:
+                logging.warning(f"No label {obj.name} in label map. Skip object")
+                continue
             dx = float(obj.bndbox.xmax - obj.bndbox.xmin)
             dy = float(obj.bndbox.ymax - obj.bndbox.ymin)
             x = obj.bndbox.xmin + dx * 0.5
@@ -82,10 +85,10 @@ class FormatConvertorMixin(PascalAnnotation):
         return "\n".join(objects)
 
     def to_labelme(
-            self,
-            img_path: Union[str, Path] = None,
-            save_img_data: bool = False,
-            label_me_version: str = "5.3.0",
+        self,
+        img_path: Union[str, Path] = None,
+        save_img_data: bool = False,
+        label_me_version: str = "5.3.0",
     ) -> dict:
         """
         Convert annotation to labelme format
