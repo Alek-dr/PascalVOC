@@ -1,4 +1,3 @@
-from operator import itemgetter
 from typing import List, Optional, Union
 
 from typing_extensions import Protocol, runtime_checkable
@@ -45,4 +44,4 @@ class PascalAnnotation(Protocol):
         if len(ind) == 0:
             self.objects = list()
         elif len(ind) < len(self.objects):
-            self.objects = [itemgetter(*ind)(self.objects)]
+            self.objects = [self.objects[i] for i in ind]
