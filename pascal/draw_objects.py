@@ -63,8 +63,7 @@ class DrawObjectsMixin(PascalAnnotation):
         Parameters
         ----------
         image: Pillow image
-        width: The line width, in pixels.
-            specify attribute types to explicitly cast attribute values
+        width: The line width, in pixels
         color: bounding box color
         fontsize: requested font size, in pixels
         font_path: path to font

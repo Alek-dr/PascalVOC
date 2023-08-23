@@ -52,6 +52,13 @@ if __name__ == "__main__":
         draw_img.show()
 ```
 
+##### Visualization example:
+```
+draw_img = ann.draw_boxes(img)
+draw_img.show()
+```
+![vis_example](examples/vis.png)
+
 #### Installation
 From source 
 ```
