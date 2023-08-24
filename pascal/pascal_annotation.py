@@ -7,13 +7,11 @@ from xmlobj.xmlmapping import XMLMixin
 from pascal.draw_objects import DrawObjectsMixin
 from pascal.exceptions import InconsistentAnnotation
 from pascal.format_convertor import FormatConvertorMixin
-from pascal.protocol_implementations import BBox, PascalObject, Size
+from pascal.protocol_implementations import BndBox, Object, Size
 
 
-class PascalAnnotation(DrawObjectsMixin, XMLMixin, FormatConvertorMixin):
-    def __init__(
-        self, filename: Union[Path, str], objects: List[PascalObject], size: Size
-    ):
+class Annotation(DrawObjectsMixin, XMLMixin, FormatConvertorMixin):
+    def __init__(self, filename: Union[Path, str], objects: List[Object], size: Size):
         self.filename = filename
         self.objects = objects
         self.size = size
@@ -24,7 +22,8 @@ def annotation_from_yolo(
     img_w: int = 1,
     img_h: int = 1,
     label_map: Optional[dict] = None,
-) -> PascalAnnotation:
+    precision: int = 4,
+) -> Annotation:
     """
     Get annotation object from yolo ann file
 
@@ -35,12 +34,17 @@ def annotation_from_yolo(
     img_h: image height, px
     label_map: dict of labels and correspond ids, example:
         label_map = {0: "person", 1: "dog"}
+    precision: coordinates precision
     Returns
     -------
     PascalAnnotation object
     """
     objects = []
     has_label_map = label_map is not None
+    if img_w <= 1 or img_h <= 1:
+        logging.warning(
+            "Relative coordinates! Cannot work with labelimg or other tools. Please, set correct image size"
+        )
     with open(ann_path, "r") as f:
         lines = f.readlines()
     for line in lines:
@@ -54,6 +58,7 @@ def annotation_from_yolo(
         x2 = x + dx
         y1 = y - dy
         y2 = y + dy
+
         x1 *= img_w
         x2 *= img_w
         y1 *= img_h
@@ -66,10 +71,15 @@ def annotation_from_yolo(
                 logging.warning(f"No id {class_id} in label map")
         else:
             name = str(class_id)
-        box = BBox(x1, y1, x2, y2)
-        pobj = PascalObject(name, box)
+        box = BndBox(
+            round(x1, precision),
+            round(y1, precision),
+            round(x2, precision),
+            round(y2, precision),
+        )
+        pobj = Object(name, box)
         objects.append(pobj)
-    ann = PascalAnnotation(Path(ann_path).stem, objects, Size(img_w, img_h))
-    if not isinstance(ann, PascalAnnotation):
+    ann = Annotation(Path(ann_path).stem, objects, Size(img_w, img_h))
+    if not isinstance(ann, Annotation):
         raise InconsistentAnnotation(f"Cannot make annotation from file: {ann_path}")
     return ann

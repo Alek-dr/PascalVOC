@@ -1,2 +1,2 @@
 from pascal.annotation_fabric import annotation_from_xml
-from pascal.pascal_annotation import PascalAnnotation, annotation_from_yolo
+from pascal.pascal_annotation import Annotation, annotation_from_yolo

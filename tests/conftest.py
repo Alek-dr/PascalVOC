@@ -47,6 +47,33 @@ annotations = [
             },
             {"attr_name": "segmented", "attr_val": 0, "dtype": int},
         ],
+        "objects": [
+            {
+                "name": "dog",
+                "pose": "Left",
+                "truncated": 1,
+                "difficult": 0,
+                "bndbox": {
+                    "xmin": 48,
+                    "ymin": 240,
+                    "xmax": 195,
+                    "ymax": 371,
+                },
+            },
+            {
+                "name": "person",
+                "pose": "Left",
+                "truncated": 1,
+                "difficult": 0,
+                "bndbox": {
+                    "xmin": 8,
+                    "ymin": 12,
+                    "xmax": 352,
+                    "ymax": 498,
+                },
+            },
+        ],
+        "obj_info": {"names": ["dog", "person"], "count": {"dog": 1, "person": 1}},
     },
     {
         "file": "test_data/valid_annotations/000103.xml",
@@ -88,6 +115,200 @@ annotations = [
             },
             {"attr_name": "segmented", "attr_val": 0, "dtype": int},
         ],
+        "objects": [
+            {
+                "name": "car",
+                "pose": "Unspecified",
+                "truncated": 1,
+                "difficult": 0,
+                "bndbox": {
+                    "xmin": 1,
+                    "ymin": 241,
+                    "xmax": 47,
+                    "ymax": 276,
+                },
+            },
+            {
+                "name": "car",
+                "pose": "Unspecified",
+                "truncated": 0,
+                "difficult": 0,
+                "bndbox": {
+                    "xmin": 26,
+                    "ymin": 234,
+                    "xmax": 85,
+                    "ymax": 265,
+                },
+            },
+            {
+                "name": "car",
+                "pose": "Unspecified",
+                "truncated": 0,
+                "difficult": 0,
+                "bndbox": {
+                    "xmin": 98,
+                    "ymin": 222,
+                    "xmax": 143,
+                    "ymax": 252,
+                },
+            },
+            {
+                "name": "car",
+                "pose": "Unspecified",
+                "truncated": 0,
+                "difficult": 1,
+                "bndbox": {
+                    "xmin": 183,
+                    "ymin": 217,
+                    "xmax": 203,
+                    "ymax": 230,
+                },
+            },
+            {
+                "name": "car",
+                "pose": "Unspecified",
+                "truncated": 0,
+                "difficult": 1,
+                "bndbox": {
+                    "xmin": 201,
+                    "ymin": 211,
+                    "xmax": 213,
+                    "ymax": 223,
+                },
+            },
+            {
+                "name": "car",
+                "pose": "Unspecified",
+                "truncated": 0,
+                "difficult": 1,
+                "bndbox": {
+                    "xmin": 160,
+                    "ymin": 218,
+                    "xmax": 179,
+                    "ymax": 229,
+                },
+            },
+            {
+                "name": "car",
+                "pose": "Unspecified",
+                "truncated": 0,
+                "difficult": 1,
+                "bndbox": {
+                    "xmin": 55,
+                    "ymin": 223,
+                    "xmax": 93,
+                    "ymax": 238,
+                },
+            },
+            {
+                "name": "car",
+                "pose": "Unspecified",
+                "truncated": 0,
+                "difficult": 1,
+                "bndbox": {
+                    "xmin": 29,
+                    "ymin": 227,
+                    "xmax": 61,
+                    "ymax": 236,
+                },
+            },
+            {
+                "name": "car",
+                "pose": "Unspecified",
+                "truncated": 1,
+                "difficult": 1,
+                "bndbox": {
+                    "xmin": 1,
+                    "ymin": 230,
+                    "xmax": 30,
+                    "ymax": 242,
+                },
+            },
+        ],
+        "obj_info": {
+            "names": ["car"],
+            "count": {
+                "car": 9,
+            },
+        },
+    },
+    {
+        "file": "test_data/valid_annotations/000010.xml",
+        "n_objects": 2,
+        "attributes": [
+            {"attr_name": "folder", "attr_val": "VOC2007", "dtype": str},
+            {"attr_name": "filename", "attr_val": "000010.jpg", "dtype": str},
+            {
+                "attr_name": "source",
+                "attr_val": [
+                    {
+                        "attr_name": "database",
+                        "attr_val": "The VOC2007 Database",
+                        "dtype": str,
+                    },
+                    {
+                        "attr_name": "annotation",
+                        "attr_val": "PASCAL VOC2007",
+                        "dtype": str,
+                    },
+                    {"attr_name": "image", "attr_val": "flickr", "dtype": str},
+                    {"attr_name": "flickrid", "attr_val": 227250080, "dtype": int},
+                ],
+            },
+            {
+                "attr_name": "owner",
+                "attr_val": [
+                    {"attr_name": "flickrid", "attr_val": "genewolf", "dtype": str},
+                    {
+                        "attr_name": "name",
+                        "attr_val": "whiskey kitten",
+                        "dtype": str,
+                    },
+                ],
+            },
+            {
+                "attr_name": "size",
+                "attr_val": [
+                    {"attr_name": "width", "attr_val": 354, "dtype": int},
+                    {"attr_name": "height", "attr_val": 480, "dtype": int},
+                    {"attr_name": "depth", "attr_val": 3, "dtype": int},
+                ],
+            },
+            {"attr_name": "segmented", "attr_val": 0, "dtype": int},
+        ],
+        "objects": [
+            {
+                "name": "horse",
+                "pose": "Rear",
+                "truncated": 0,
+                "difficult": 0,
+                "bndbox": {
+                    "xmin": 87,
+                    "ymin": 97,
+                    "xmax": 258,
+                    "ymax": 427,
+                },
+            },
+            {
+                "name": "person",
+                "pose": "Unspecified",
+                "truncated": 0,
+                "difficult": 0,
+                "bndbox": {
+                    "xmin": 133,
+                    "ymin": 72,
+                    "xmax": 245,
+                    "ymax": 284,
+                },
+            },
+        ],
+        "obj_info": {
+            "names": ["horse", "person"],
+            "count": {
+                "horse": 1,
+                "person": 1,
+            },
+        },
     },
 ]
 

@@ -3,7 +3,7 @@ from xmlobj.xmlmapping import get_xml_obj
 
 from pascal import annotation_from_xml
 from pascal.exceptions import InconsistentAnnotation
-from pascal.protocols import PascalObject
+from pascal.protocols import PascalAnnotation, PascalObject
 
 
 def check_attributes(obj, attr_params):
@@ -18,6 +18,29 @@ def check_attributes(obj, attr_params):
         assert isinstance(getattr(obj, attr_name), attr_type)
 
 
+def has_object(ann: PascalAnnotation, target_object: dict) -> bool:
+    for obj in ann:
+        match = True
+        for k, v in target_object.items():
+            attr_val = getattr(obj, k)
+            if k == "bndbox":
+                if (
+                    v["xmin"] != attr_val.xmin
+                    or v["xmax"] != attr_val.xmax
+                    or v["ymin"] != attr_val.ymin
+                    or v["ymax"] != attr_val.ymax
+                ):
+                    match = False
+                    break
+            else:
+                if attr_val != v:
+                    match = False
+                    break
+        if match:
+            return True
+    return False
+
+
 def test_valid(valid_annotations):
     """
     Проверить параметры валидных аннотаций
@@ -27,6 +50,10 @@ def test_valid(valid_annotations):
         ann = annotation_from_xml(ann_file)
         for attributes in ann_sample.get("attributes"):
             check_attributes(ann, attributes)
+        objects = ann_sample.get("objects")
+        if objects is not None:
+            for obj in objects:
+                assert has_object(ann, obj)
 
 
 def test_invalid_annotations(invalid_ann_files):
@@ -44,6 +71,7 @@ def test_valid_objects(valid_objects):
     """
     for obj_params in valid_objects:
         objects = get_xml_obj(obj_params.get("file"))
+        assert hasattr(objects, "object")
         for obj in objects.object:
             assert isinstance(obj, PascalObject)
 
@@ -54,5 +82,6 @@ def test_invalid_objects(invalid_objects):
     """
     for obj_params in invalid_objects:
         objects = get_xml_obj(obj_params.get("file"))
+        assert hasattr(objects, "object")
         for obj in objects.object:
             assert not isinstance(obj, PascalObject)

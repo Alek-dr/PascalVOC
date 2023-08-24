@@ -1,0 +1,22 @@
+{
+  "pottedplant": 0,
+  "bottle": 1,
+  "train": 2,
+  "car": 3,
+  "bird": 4,
+  "diningtable": 5,
+  "aeroplane": 6,
+  "bicycle": 7,
+  "sheep": 8,
+  "bus": 9,
+  "horse": 10,
+  "sofa": 11,
+  "motorbike": 12,
+  "tvmonitor": 13,
+  "cow": 14,
+  "person": 15,
+  "boat": 16,
+  "chair": 17,
+  "cat": 18,
+  "dog": 19
+}

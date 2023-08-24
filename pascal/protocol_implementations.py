@@ -9,7 +9,7 @@ from pascal.protocols import Size as SizeProtocol
 
 
 @dataclass
-class BBox(BndBoxProtocol, XMLMixin):
+class BndBox(BndBoxProtocol, XMLMixin):
     xmin: Union[float, int]
     ymin: Union[float, int]
     xmax: Union[float, int]
@@ -17,9 +17,9 @@ class BBox(BndBoxProtocol, XMLMixin):
 
 
 @dataclass
-class PascalObject(PascalObjectProtocol, XMLMixin):
+class Object(PascalObjectProtocol, XMLMixin):
     name: str
-    bndbox: BBox
+    bndbox: BndBox
 
 
 @dataclass

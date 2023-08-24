@@ -37,6 +37,6 @@ def save_xml(output: Union[str, Path], xml_obj):
     Save object to output file
     """
     tree = xml.ElementTree(xml_obj)
-    xml.indent(tree, space="\t", level=0)
+    xml.indent(tree, space="    ", level=0)
     with open(output, "w") as out:
         tree.write(out, encoding="unicode", method="xml")
