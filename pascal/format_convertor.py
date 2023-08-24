@@ -103,8 +103,10 @@ class FormatConvertorMixin(PascalAnnotation):
         -------
         labelme annotation dict which can be saved as json
         """
-        if not img_path.exists():
-            raise FileNotFoundError(f"No such file: {img_path}")
+        if save_img_data:
+            img_path = Path(img_path)
+            if not img_path.exists():
+                raise FileNotFoundError(f"No such file: {img_path}")
 
         encoded_string = None
         if save_img_data:
