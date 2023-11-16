@@ -5,7 +5,7 @@ with open("README.md", "r") as f:
 
 setuptools.setup(
     name="pascal_voc",
-    version="2.1.5",
+    version="2.1.6",
     author="Alexander Barmin",
     author_email="barmin1@mail.ru",
     description="Tool to work with annotation formats",
@@ -20,7 +20,7 @@ setuptools.setup(
         "Pillow>=8.1.0",
         "transliterate>=1.10.2",
         "xmlobj==1.2.0",
-        "typing_extensions==4.7.1",
+        "typing_extensions>=4.1.0",
     ],
     license="MIT",
     classifiers=[
