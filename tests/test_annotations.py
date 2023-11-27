@@ -15,6 +15,7 @@ def check_attributes(obj, attr_params):
             check_attributes(getattr(obj, attr_name), item)
     else:
         attr_type = attr_params.get("dtype")
+        assert attr_params.get("attr_val") == getattr(obj, attr_name)
         assert isinstance(getattr(obj, attr_name), attr_type)
 
 
@@ -25,13 +26,24 @@ def has_object(ann: PascalAnnotation, target_object: dict) -> bool:
             attr_val = getattr(obj, k)
             if k == "bndbox":
                 if (
-                    v["xmin"] != attr_val.xmin
-                    or v["xmax"] != attr_val.xmax
-                    or v["ymin"] != attr_val.ymin
-                    or v["ymax"] != attr_val.ymax
+                        v["xmin"] != attr_val.xmin
+                        or v["xmax"] != attr_val.xmax
+                        or v["ymin"] != attr_val.ymin
+                        or v["ymax"] != attr_val.ymax
                 ):
                     match = False
                     break
+            elif k == "attributes":
+                attr_val = getattr(obj, k)
+                attributes = getattr(attr_val, "attribute")
+                if isinstance(attributes, list) and len(attributes) == len(v):
+                    for a, item in zip(attributes, v):
+                        for t in item:
+                            check_attributes(a, t)
+                else:
+                    for attr in v:
+                        for item in attr:
+                            check_attributes(attributes, item)
             else:
                 if attr_val != v:
                     match = False
