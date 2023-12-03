@@ -1,6 +1,6 @@
 [project]
 name = "pascal_voc"
-version = "2.1.7"
+version = "2.1.8"
 authors = [
   { name="Alexander Barmin", email="barmin1@mail.ru" },
 ]
@@ -15,7 +15,3 @@ classifiers = [
 
 [project.urls]
 "Homepage" = "https://github.com/Alek-dr/PascalVOC"
-
-[build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
