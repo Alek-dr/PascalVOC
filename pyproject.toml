@@ -14,4 +14,4 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/Alek-dr/PascalVOC"
+homepage = "https://github.com/Alek-dr/PascalVOC"
