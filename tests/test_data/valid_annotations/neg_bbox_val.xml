@@ -1,0 +1,37 @@
+<annotation>
+    <folder>folder</folder>
+    <filename>test.jpg</filename>
+    <path>test.jpg</path>
+    <source>
+        <database>Unspecified</database>
+    </source>
+    <size>
+        <width>355</width>
+        <height>539</height>
+        <depth>3</depth>
+    </size>
+    <object>
+        <name>cat1</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>-2</xmin>
+            <ymin>-3</ymin>
+            <xmax>355</xmax>
+            <ymax>333</ymax>
+        </bndbox>
+    </object>
+    <object>
+        <name>cat2</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>230</xmin>
+            <ymin>441</ymin>
+            <xmax>336</xmax>
+            <ymax>525</ymax>
+        </bndbox>
+    </object>
+</annotation>

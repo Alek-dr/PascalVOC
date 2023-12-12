@@ -19,18 +19,28 @@ def check_attributes(obj, attr_params):
         assert isinstance(getattr(obj, attr_name), attr_type)
 
 
-def has_object(ann: PascalAnnotation, target_object: dict) -> bool:
+def check_bbox(target_values, bbox, clip_zero):
+    target_values = target_values.copy()
+    if clip_zero:
+        for k, v in target_values.items():
+            target_values[k] = max(0, v)
+    if (
+        target_values["xmin"] != bbox.xmin
+        or target_values["xmax"] != bbox.xmax
+        or target_values["ymin"] != bbox.ymin
+        or target_values["ymax"] != bbox.ymax
+    ):
+        return False
+    return True
+
+
+def has_object(ann: PascalAnnotation, target_object: dict, clip_zero: bool) -> bool:
     for obj in ann:
         match = True
         for k, v in target_object.items():
             attr_val = getattr(obj, k)
             if k == "bndbox":
-                if (
-                        v["xmin"] != attr_val.xmin
-                        or v["xmax"] != attr_val.xmax
-                        or v["ymin"] != attr_val.ymin
-                        or v["ymax"] != attr_val.ymax
-                ):
+                if not check_bbox(v, attr_val, clip_zero):
                     match = False
                     break
             elif k == "attributes":
@@ -53,19 +63,23 @@ def has_object(ann: PascalAnnotation, target_object: dict) -> bool:
     return False
 
 
-def test_valid(valid_annotations):
+@pytest.mark.parametrize(
+    "clip_zero",
+    [True, False],
+)
+def test_valid(valid_annotations, clip_zero):
     """
     Проверить параметры валидных аннотаций
     """
     for ann_sample in valid_annotations:
         ann_file = ann_sample.get("file")
-        ann = annotation_from_xml(ann_file)
+        ann = annotation_from_xml(ann_file, clip_zero=clip_zero)
         for attributes in ann_sample.get("attributes"):
             check_attributes(ann, attributes)
         objects = ann_sample.get("objects")
         if objects is not None:
             for obj in objects:
-                assert has_object(ann, obj)
+                assert has_object(ann, obj, clip_zero)
 
 
 def test_invalid_annotations(invalid_ann_files):

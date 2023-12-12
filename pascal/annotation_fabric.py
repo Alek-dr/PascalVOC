@@ -9,11 +9,13 @@ from pascal.draw_objects import DrawObjectsMixin
 from pascal.exceptions import InconsistentAnnotation, ParseException
 from pascal.format_convertor import FormatConvertorMixin
 from pascal.protocols import PascalAnnotation, Size
-from pascal.utils import _is_primitive
+from pascal.utils import _is_primitive, _check_bnd_box
 
 
 def annotation_from_xml(
-    file_path: Union[str, Path], attr_type_spec: Optional[dict] = None
+    file_path: Union[str, Path],
+    attr_type_spec: Optional[dict] = None,
+    clip_zero: bool = True,
 ) -> Union[PascalAnnotation, DrawObjectsMixin, FormatConvertorMixin, XMLMixin]:
     """
     Make annotation object from PascalVOC annotation file
@@ -23,6 +25,7 @@ def annotation_from_xml(
     file: path to xml file
     attr_type_spec: dict, optional
         specify attribute types to explicitly cast attribute values
+    clip_zero: clip negative bbox values to 0
 
     Returns
     -------
@@ -51,4 +54,6 @@ def annotation_from_xml(
             obj.size, Size
         ):
             raise InconsistentAnnotation(f"File {file_path} is not PascalVOCAnnotation")
+    for object in obj:
+        object.bndbox = _check_bnd_box(object.bndbox, clip_zero)
     return obj

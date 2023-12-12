@@ -545,6 +545,65 @@ annotations = [
             },
         },
     },
+    {
+        "file": "test_data/valid_annotations/neg_bbox_val.xml",
+        "n_objects": 2,
+        "attributes": [
+            {"attr_name": "folder", "attr_val": "folder", "dtype": str},
+            {"attr_name": "filename", "attr_val": "test.jpg", "dtype": str},
+            {
+                "attr_name": "source",
+                "attr_val": [
+                    {
+                        "attr_name": "database",
+                        "attr_val": "Unspecified",
+                        "dtype": str,
+                    },
+                ],
+            },
+            {
+                "attr_name": "size",
+                "attr_val": [
+                    {"attr_name": "width", "attr_val": 355, "dtype": int},
+                    {"attr_name": "height", "attr_val": 539, "dtype": int},
+                    {"attr_name": "depth", "attr_val": 3, "dtype": int},
+                ],
+            },
+        ],
+        "objects": [
+            {
+                "name": "cat1",
+                "pose": "Unspecified",
+                "truncated": 0,
+                "difficult": 0,
+                "bndbox": {
+                    "xmin": -2,
+                    "ymin": -3,
+                    "xmax": 355,
+                    "ymax": 333,
+                },
+            },
+            {
+                "name": "cat2",
+                "pose": "Unspecified",
+                "truncated": 0,
+                "difficult": 0,
+                "bndbox": {
+                    "xmin": 230,
+                    "ymin": 441,
+                    "xmax": 336,
+                    "ymax": 525,
+                },
+            },
+        ],
+        "obj_info": {
+            "names": ["cat1", "cat2"],
+            "count": {
+                "cat1": 1,
+                "cat2": 1,
+            },
+        },
+    },
 ]
 
 invalid_annotations = [
