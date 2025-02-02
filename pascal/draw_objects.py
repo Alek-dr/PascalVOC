@@ -3,7 +3,7 @@ import logging
 import random
 from functools import lru_cache
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Tuple
 
 import PIL.ImageFont
 from PIL import Image, ImageDraw
@@ -21,7 +21,7 @@ RAND_COLORS = [
 ]
 
 
-@lru_cache
+@lru_cache()
 def get_name_hash(name: str) -> int:
     """
     https://stackoverflow.com/questions/16008670/how-to-hash-a-string-into-8-digits
@@ -52,7 +52,7 @@ class DrawObjectsMixin(PascalAnnotation):
         self,
         image: Image.Image,
         width: int = 5,
-        color: Optional[tuple[int, int, int]] = None,
+        color: Optional[Tuple[int, int, int]] = None,
         fontsize: int = 10,
         font_path: str = None,
         language_code: Optional[str] = None,
