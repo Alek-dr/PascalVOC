@@ -5,7 +5,7 @@ with open("README.md", "r") as f:
 
 setuptools.setup(
     name="pascal_voc",
-    version="2.1.11",
+    version="2.1.12",
     author="Alexander Barmin",
     author_email="barmin1@mail.ru",
     description="Tool to work with annotation formats",
